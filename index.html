@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecom by parizad inc</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Header & Navigation -->
+    <header>
+       <div class="logo">
+    <img src="images/logo (2).jpeg" alt="Ecom by parizad inc" style="height: 45px;">
+</div>
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#catalog">Catalog</a>
+            <a href="#contact">Contact Us</a>
+        </nav>
+        <div class="cart-icon" onclick="toggleCart()">
+            🛒 Cart (<span id="cart-count">0</span>)
+        </div>
+    </header>
+
+    <!-- 1. HOME SECTION -->
+    <section id="home" class="hero-section">
+        <div class="hero-content">
+            <h1>Welcome to Ecom by parizad inc</h1>
+            <p>Your one-stop destination for premium quality products. We believe in elegance, reliability, and delivering excellence right to your doorstep.</p>
+            <a href="#catalog" class="shop-now-btn">Explore Catalog</a>
+        </div>
+    </section>
+
+    <!-- 2. CATALOG SECTION (PRODUCTS) -->
+    <section id="catalog" class="container">
+        <h2 class="section-title">Our Exclusive Catalog</h2>
+        <div id="product-list" class="product-grid">
+            <!-- Products MongoDB se dynamic load honge -->
+        </div>
+    </section>
+
+    <!-- 3. CONTACT INFO SECTION -->
+    <section id="contact" class="container contact-section">
+        <h2 class="section-title">Contact Us</h2>
+        <div class="contact-card">
+            <p><strong>Brand:</strong> Ecom by parizad inc</p>
+            <p><strong>Email:</strong> support@parizadinc.com</p>
+            <p><strong>Phone:</strong> +92 300 1234567</p>
+            <p><strong>Hours:</strong> Mon - Sat (9:00 AM - 9:00 PM)</p>
+        </div>
+    </section>
+
+    <!-- 4. CART MODAL -->
+    <div id="cart-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="toggleCart()">&times;</span>
+            <h2>Your Shopping Cart</h2>
+            <div id="cart-items"></div>
+            <h3>Total: Rs. <span id="cart-total">0</span></h3>
+            <button class="checkout-btn" onclick="openCheckoutModal()">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <!-- 5. BUY NOW / CHECKOUT MODAL (ORDER FORM) -->
+    <div id="checkout-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeCheckoutModal()">&times;</span>
+            <h2>Checkout - Ecom by parizad inc</h2>
+            <form id="order-form">
+                <div class="form-group">
+                    <label>Full Name:</label>
+                    <input type="text" id="cust-name" required placeholder="Enter your full name">
+                </div>
+                <div class="form-group">
+                    <label>Phone Number:</label>
+                    <input type="tel" id="cust-phone" required placeholder="03xx-xxxxxxx">
+                </div>
+                <div class="form-group">
+                    <label>City:</label>
+                    <input type="text" id="cust-city" required placeholder="Enter your city">
+                </div>
+                <div class="form-group">
+                    <label>Shipping Address:</label>
+                    <textarea id="cust-address" required placeholder="Complete home address"></textarea>
+                </div>
+                <button type="submit" class="confirm-btn">Confirm Order (Cash on Delivery)</button>
+            </form>
+        </div>
+    </div>
+    
+</div>
+<!-- Full Page Product Detail Section (Initially Hidden) -->
+<div id="full-page-detail" class="full-page-overlay">
+    <div class="detail-container">
+        <!-- Close Button Top Right -->
+        <button class="full-page-close" onclick="closeFullPageDetail()">← Back to Catalog</button>
+        
+        <div class="full-page-body">
+            <!-- Left Side: Large Image -->
+            <div class="full-page-img-section">
+                <img id="detail-img" src="" alt="Large Product Image">
+            </div>
+            
+            <!-- Right Side: Details -->
+            <div class="full-page-details-section">
+                <h1 id="detail-title"></h1>
+                <p id="detail-desc" class="full-page-description"></p>
+                <div class="price-section">
+                    <span class="full-page-price-tag" id="detail-price"></span>
+                </div>
+                
+                <div class="action-buttons">
+                 <button id="detail-add-cart-btn" class="large-add-cart-btn">Add to Cart 🛒</button>
+                 <button id="detail-buy-btn" class="large-buy-btn">Buy Now (Checkout) 💳</button>
+                </div>
+                
+                <div class="uk-shipping-badge">
+                    <span>🇬🇧 Available for UK Delivery</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <footer>
+        <p>&copy; 2026 Ecom by parizad inc. All Rights Reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+    
+</body>
+
+</html>
