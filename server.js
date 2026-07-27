@@ -100,3 +100,4 @@ app.get('/api/products/:id', async (req, res) => {
 });
 
 startServer();
+module.exports = app;
