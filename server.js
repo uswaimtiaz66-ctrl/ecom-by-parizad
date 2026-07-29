@@ -103,6 +103,16 @@ if (process.env.NODE_ENV !== 'production') {
         console.log(`🚀 Server running locally on port ${PORT}`);
     });
 }
+// Static files (public folder) serve karein
+app.use(express.static(path.join(__dirname, 'public')));
 
-// Export for Vercel Serverless Function
+// Sub routes aur APIs
+app.get('/api/products', async (req, res) => { /* ... existing code ... */ });
+app.get('/api/products/:id', async (req, res) => { /* ... existing code ... */ });
+
+// Catch-all route for index.html (Root aur baqi tamaam routes ke liye)
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 module.exports = app;
