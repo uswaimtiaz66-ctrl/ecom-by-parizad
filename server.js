@@ -8,10 +8,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// 1. Static files (public folder) serve karein
+// Static files serve karein (public folder)
 app.use(express.static(path.join(__dirname, 'public')));
 
-// 2. Product Schema & Model
+// Product Schema & Model
 const productSchema = new mongoose.Schema({
     name: String,
     price: Number,
@@ -22,21 +22,22 @@ const productSchema = new mongoose.Schema({
 
 const Product = mongoose.models.Product || mongoose.model('Product', productSchema);
 
-// 3. MongoDB Atlas Connection
+// MongoDB Atlas Connection String
 const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://uswaimtiaz66_db_user:08HSqySFNTYrIJeG@cluster0.4stawbe.mongodb.net/ecomStore?retryWrites=true&w=majority';
 
-// Serverless friendly DB connection helper
+// Database connection helper
+let isConnected = false;
 async function connectDB() {
-    if (mongoose.connection.readyState >= 1) return;
-    await mongoose.connect(MONGO_URI);
+    if (isConnected && mongoose.connection.readyState === 1) return;
+    try {
+        await mongoose.connect(MONGO_URI);
+        isConnected = true;
+    } catch (err) {
+        console.error("MongoDB Connection Error:", err);
+    }
 }
 
-// 4. Root Route (Website Home Page)
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
-// 5. API Endpoints
+// API Endpoints
 app.get('/api/products', async (req, res) => {
     try {
         await connectDB();
@@ -96,23 +97,9 @@ app.get('/api/products/:id', async (req, res) => {
     }
 });
 
-// Local development server listener
-if (process.env.NODE_ENV !== 'production') {
-    const PORT = process.env.PORT || 5000;
-    app.listen(PORT, () => {
-        console.log(`🚀 Server running locally on port ${PORT}`);
-    });
-}
-// Static files (public folder) serve karein
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Sub routes aur APIs
-app.get('/api/products', async (req, res) => { /* ... existing code ... */ });
-app.get('/api/products/:id', async (req, res) => { /* ... existing code ... */ });
-
-// Catch-all route for index.html (Root aur baqi tamaam routes ke liye)
+// All other routes serve index.html
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-module.exports = app;
+module.exports=app;
