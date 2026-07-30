@@ -55,21 +55,29 @@ const fallbackProducts = [
     }
 ];
 
-// 1. Fetch Products From Backend
+// 1. Fetch Products From Backend & Combine
 async function fetchProductsFromBackend() {
     try {
         const response = await fetch('/api/products');
         if (!response.ok) throw new Error("API Network response was not ok");
         
-        products = await response.json();
+        const backendProducts = await response.json();
         
-        if (!Array.isArray(products) || products.length === 0) {
-            products = fallbackProducts;
+        if (Array.isArray(backendProducts) && backendProducts.length > 0) {
+            products = [...backendProducts];
+            // Add fallback items if not already present from backend
+            fallbackProducts.forEach(fb => {
+                if (!products.some(p => (p.name || p.title) === fb.name)) {
+                    products.push(fb);
+                }
+            });
+        } else {
+            products = [...fallbackProducts];
         }
-        displayProducts();
     } catch (error) {
-        console.warn("Error/Timeout fetching from API, using fallback:", error);
-        products = fallbackProducts;
+        console.warn("Error fetching from API, using fallback list:", error);
+        products = [...fallbackProducts];
+    } finally {
         displayProducts();
     }
 }
