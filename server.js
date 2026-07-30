@@ -8,8 +8,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Public folder serve karein
+// Public static assets
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(__dirname)); // Direct root access for logo
 
 // Product Schema & Model
 const productSchema = new mongoose.Schema({
@@ -25,23 +26,12 @@ const Product = mongoose.models.Product || mongoose.model('Product', productSche
 // Connection URI
 const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://uswaimtiaz66_db_user:08HSqySFNTYrIJeG@cluster0.4stawbe.mongodb.net/ecomStore?retryWrites=true&w=majority';
 
-// Serverless-friendly MongoDB Connection Helper
-let isConnected = false;
-async function connectDB() {
-    if (isConnected && mongoose.connection.readyState === 1) return;
-    try {
-        await mongoose.connect(MONGO_URI, {
-            serverSelectionTimeoutMS: 2500, // Quick 2.5s timeout for Vercel
-        });
-        isConnected = true;
-        console.log("✅ MongoDB Connected!");
-    } catch (err) {
-        isConnected = false;
-        console.log("⚠️ MongoDB connection skipped/failed, using fallback data.");
-    }
-}
+// Connect to MongoDB
+mongoose.connect(MONGO_URI, { serverSelectionTimeoutMS: 3000 })
+    .then(() => console.log("✅ MongoDB Connected Successfully!"))
+    .catch(() => console.log("ℹ️ Running with Store Backup Data."));
 
-// Backup Data (Never fails on Vercel)
+// Fallback Data
 const defaultProducts = [
     { 
         _id: "650000000000000000000001",
@@ -66,45 +56,33 @@ const defaultProducts = [
     }
 ];
 
-// API Endpoints
+// Routes
 app.get('/api/products', async (req, res) => {
-    await connectDB();
     try {
         if (mongoose.connection.readyState === 1) {
             const products = await Product.find();
             if (products.length > 0) return res.json(products);
         }
-    } catch (error) {
-        console.error("API error:", error.message);
-    }
-    // Fallback if DB fetch fails or returns empty
+    } catch (e) {}
     res.json(defaultProducts);
 });
 
 app.get('/api/products/:id', async (req, res) => {
-    await connectDB();
     try {
         if (mongoose.connection.readyState === 1) {
             const product = await Product.findById(req.params.id);
             if (product) return res.json(product);
         }
-    } catch (error) {
-        console.error("API ID error:", error.message);
-    }
+    } catch (e) {}
     const item = defaultProducts.find(p => p._id === req.params.id) || defaultProducts[0];
     res.json(item);
 });
 
-// Wildcard route
 app.get('/*splat', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 const PORT = process.env.PORT || 5000;
-if (process.env.NODE_ENV !== 'production') {
-    app.listen(PORT, () => {
-        console.log(`🚀 Server running locally on port ${PORT}`);
-    });
-}
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
 
 module.exports = app;
