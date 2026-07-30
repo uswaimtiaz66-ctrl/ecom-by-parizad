@@ -387,18 +387,33 @@ footer {
    ========================================== */
 
 @media screen and (max-width: 768px) {
-    /* Header */
+    /* Header & Responsive Nav */
     header {
         padding: 10px 14px !important;
         background: #111111 !important;
+        flex-wrap: wrap !important;
+        gap: 8px !important;
     }
 
     .logo img {
-        max-height: 32px !important;
+        max-height: 30px !important;
     }
 
     nav {
-        display: none !important;
+        display: flex !important;
+        order: 3;
+        width: 100% !important;
+        justify-content: center !important;
+        padding-top: 6px;
+        border-top: 1px solid #222;
+        margin-top: 4px;
+    }
+
+    nav a {
+        display: inline-block !important;
+        font-size: 0.82rem !important;
+        margin: 0 10px !important;
+        color: #ccc !important;
     }
 
     .cart-icon {
@@ -465,15 +480,16 @@ footer {
         border-radius: 6px !important;
     }
 
+    /* Fixed 2-Line Text Truncation Without Linter Errors */
     .product-card h3 {
         font-size: 0.82rem !important;
         font-weight: 600 !important;
         line-height: 1.25 !important;
         margin: 6px 0 4px 0 !important;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
+        height: 2.5em;
         overflow: hidden;
+        display: block;
+        word-break: break-word;
     }
 
     .product-card p {
