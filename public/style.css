@@ -383,59 +383,79 @@ footer {
 }
 
 /* ==========================================
-   FIXED RESPONSIVE MOBILE VIEW
+   FIXED RESPONSIVE MOBILE VIEW (WHITE HEADER & SINGLE LINE)
    ========================================== */
 
 @media screen and (max-width: 768px) {
-    /* 1. Header & Navigation Fix (Single Line / Clean Layout) */
+    /* 1. Header Layout - All in 1 Line with White Background */
     header {
-        padding: 10px 12px !important;
+        background-color: #ffffff !important; /* White background to match logo */
+        padding: 8px 10px !important;
         display: flex !important;
-        flex-direction: column !important;
-        gap: 8px !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
         align-items: center !important;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08) !important;
+        gap: 6px !important;
     }
 
-    /* Top Row: Logo & Cart */
-    header .logo {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
+    .logo img {
+        max-height: 28px !important;
+        width: auto !important;
+        display: block;
     }
 
-    /* Move Cart Icon to Top Right */
-    .cart-icon {
-        font-size: 0.78rem !important;
-        padding: 5px 12px !important;
-        border-radius: 20px !important;
-    }
-
-    /* Nav Links Clean Centered */
+    /* Center Nav Links (Black Color) */
     nav {
         display: flex !important;
         justify-content: center !important;
-        gap: 15px !important;
-        width: 100% !important;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        padding-top: 8px !important;
-        margin-top: 2px !important;
+        align-items: center !important;
+        gap: 8px !important;
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: auto !important;
     }
 
     nav a {
-        font-size: 0.8rem !important;
+        font-size: 0.72rem !important;
+        font-weight: 600 !important;
+        color: #111111 !important; /* Black text color */
         margin: 0 !important;
-        color: #ddd !important;
+        white-space: nowrap !important;
     }
 
-    /* 2. Hero Section */
+    nav a:hover {
+        color: #f39c12 !important;
+    }
+
+    /* Cart Button (Stays Yellow) */
+    .cart-icon {
+        background: #f39c12 !important;
+        color: #111111 !important;
+        font-size: 0.72rem !important;
+        padding: 6px 10px !important;
+        border-radius: 20px !important;
+        white-space: nowrap !important;
+    }
+
+    /* 2. Section Title Fix (Forces 1 Line & Adjusts Font Size) */
+    .section-title {
+        font-size: 1.15rem !important;
+        white-space: nowrap !important;
+        margin-bottom: 25px !important;
+        width: 100% !important;
+        text-align: center !important;
+    }
+
+    /* 3. Hero Banner Adjustments */
     .hero-section {
         height: auto !important;
-        padding: 40px 15px !important;
+        padding: 35px 15px !important;
     }
 
     .hero-content h1 {
-        font-size: 1.4rem !important;
+        font-size: 1.35rem !important;
         line-height: 1.3 !important;
     }
 
@@ -443,7 +463,7 @@ footer {
         font-size: 0.8rem !important;
     }
 
-    /* 3. Product Cards Equal Height Fix */
+    /* 4. Product Cards Equal Alignment */
     .product-grid {
         display: grid !important;
         grid-template-columns: repeat(2, 1fr) !important;
@@ -456,7 +476,7 @@ footer {
         display: flex !important;
         flex-direction: column !important;
         justify-content: space-between !important;
-        height: 100% !important; /* Forces equal height */
+        height: 100% !important;
         box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
     }
 
@@ -466,32 +486,30 @@ footer {
         border-radius: 8px !important;
     }
 
-    /* Fixed 2-Line Height for Titles so buttons stay aligned */
     .product-card h3 {
         font-size: 0.82rem !important;
         font-weight: 600 !important;
-        line-height: 1.2 !important;
-        margin: 8px 0 !important;
-        min-height: 2.4em !important; /* Equal height for 1 or 2 lines */
-        max-height: 2.4em !important;
+        line-height: 1.25 !important;
+        margin: 6px 0 !important;
+        height: 2.5em !important;
         overflow: hidden !important;
     }
 
     .price-tag {
-        font-size: 0.95rem !important;
+        font-size: 0.9rem !important;
         margin-bottom: 8px !important;
     }
 
     .card-buttons {
         display: flex !important;
         flex-direction: column !important;
-        gap: 6px !important;
-        margin-top: auto !important; /* Pushes buttons to bottom */
+        gap: 5px !important;
+        margin-top: auto !important;
     }
 
     .btn-add, .btn-buy {
-        padding: 8px 4px !important;
+        padding: 7px 4px !important;
         font-size: 0.75rem !important;
-        border-radius: 6px !important;
+        border-radius: 5px !important;
     }
 }
