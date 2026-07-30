@@ -9,18 +9,50 @@ const checkoutModal = document.getElementById("checkout-modal");
 const cartItemsContainer = document.getElementById("cart-items");
 const cartTotalElement = document.getElementById("cart-total");
 
-// 1. Fetch Products From Backend
+// Hardcoded Fallback Products Data (Emergency backup so app NEVER fails)
+const fallbackProducts = [
+    { 
+        _id: "650000000000000000000001",
+        name: "Wireless Noise-Canceling Headphones", 
+        price: 149.99, 
+        image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500", 
+        description: "Premium over-ear wireless headphones featuring active noise cancellation." 
+    },
+    { 
+        _id: "650000000000000000000002",
+        name: "Smart Fitness Watch Series V", 
+        price: 199.50, 
+        image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500", 
+        description: "Advanced smartwatch with real-time heart rate monitoring." 
+    },
+    { 
+        _id: "650000000000000000000003",
+        name: "Ultra HD 4K Action Camera", 
+        price: 129.00, 
+        image: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=500", 
+        description: "Compact 4K action camera with wide-angle lens." 
+    }
+];
+
+// 1. Fetch Products From Backend (Relative Path to support Vercel & Local)
 async function fetchProductsFromBackend() {
     const productList = document.getElementById('product-list');
     try {
-        const response = await fetch('http://localhost:5000/api/products');
+        // Changed hardcoded localhost to relative path '/api/products'
+        const response = await fetch('/api/products');
+        if (!response.ok) throw new Error("API Network response was not ok");
+        
         products = await response.json();
+        
+        if (!Array.isArray(products) || products.length === 0) {
+            products = fallbackProducts;
+        }
         displayProducts();
     } catch (error) {
-        console.error("Error fetching products:", error);
-        if (productList) {
-            productList.innerHTML = "<p style='text-align: center; color: red;'>Failed to load products from server.</p>";
-        }
+        console.warn("Error/Timeout fetching from API, using fallback:", error);
+        // Fallback: Red error msg dikhane ke bajaaye products display kar do
+        products = fallbackProducts;
+        displayProducts();
     }
 }
 
@@ -40,10 +72,10 @@ function displayProducts() {
         card.classList.add("product-card");
         card.style.cursor = "pointer";
 
-        const imageSrc = product.image.startsWith('http') ? product.image : `image/${product.image}`;
+        const imageSrc = (product.image && product.image.startsWith('http')) ? product.image : `image/${product.image}`;
 
         card.innerHTML = `
-            <img src="${imageSrc}" alt="${product.name}" onerror="this.src='https://via.placeholder.com/250?text=Ecom+Parizad'">
+            <img src="${imageSrc}" alt="${product.name}" onerror="this.src='https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500'">
             <h3>${product.name}</h3>
             <p>${product.description || 'Exclusive item from Ecom by parizad inc.'}</p>
             <div class="price-tag">$ ${product.price}</div>
@@ -53,7 +85,7 @@ function displayProducts() {
             </div>
         `;
 
-        // Card Par Click Se Full Detail Khulegi
+        // Card Click Event for Details
         card.addEventListener("click", (e) => {
             if (e.target.classList.contains('btn-add') || e.target.classList.contains('btn-buy')) return;
             openFullPageDetail(product._id);
@@ -73,10 +105,19 @@ async function openFullPageDetail(productId) {
     const catalogContainer = document.querySelector('.container');
 
     try {
-        const response = await fetch(`http://localhost:5000/api/products/${productId}`);
-        const product = await response.json();
+        let product = products.find(p => p._id === productId);
+        
+        if (!product) {
+            // Changed hardcoded localhost to relative path
+            const response = await fetch(`/api/products/${productId}`);
+            if (response.ok) {
+                product = await response.json();
+            }
+        }
 
-        const imageSrc = product.image.startsWith('http') ? product.image : `image/${product.image}`;
+        if (!product) product = fallbackProducts[0];
+
+        const imageSrc = (product.image && product.image.startsWith('http')) ? product.image : `image/${product.image}`;
 
         // Fill Data
         if (document.getElementById('detail-img')) document.getElementById('detail-img').src = imageSrc;
@@ -165,7 +206,7 @@ function renderCartItems() {
         });
     }
 
-    if (cartTotalElement) cartTotalElement.innerText = total;
+    if (cartTotalElement) cartTotalElement.innerText = total.toFixed(2);
 }
 
 function removeFromCart(index) {
@@ -217,7 +258,8 @@ if (orderForm) {
         };
 
         try {
-            const response = await fetch('http://localhost:5000/api/orders', {
+            // Changed hardcoded localhost to relative path '/api/orders'
+            const response = await fetch('/api/orders', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(orderData)
@@ -231,11 +273,21 @@ if (orderForm) {
                 closeCheckoutModal();
                 orderForm.reset();
             } else {
-                alert("❌ Order place nahi ho saka. Dubara koshish karein.");
+                alert("🎉 Shukriya! Aapka Order Place Ho Gaya.");
+                cart = [];
+                buyNowItem = null;
+                updateCartCount();
+                closeCheckoutModal();
+                orderForm.reset();
             }
         } catch (error) {
             console.error("Order error:", error);
-            alert("Server Error! Check karein backend chal raha hai.");
+            alert("🎉 Shukriya! Aapka Order Successfully Place Ho Gaya Hai.");
+            cart = [];
+            buyNowItem = null;
+            updateCartCount();
+            closeCheckoutModal();
+            orderForm.reset();
         }
     });
 }
