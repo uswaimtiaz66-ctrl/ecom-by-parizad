@@ -15,8 +15,8 @@ body {
 
 /* Header & Navigation */
 header {
-    background-color: #111;
-    color: white;
+    background-color: #f5f1f1;
+    color: rgb(3, 3, 3);
     padding: 15px 5%;
     display: flex;
     justify-content: space-between;
