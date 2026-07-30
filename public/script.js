@@ -9,7 +9,7 @@ const checkoutModal = document.getElementById("checkout-modal");
 const cartItemsContainer = document.getElementById("cart-items");
 const cartTotalElement = document.getElementById("cart-total");
 
-// Hardcoded Fallback Products Data (Emergency backup so app NEVER fails)
+// Hardcoded Fallback Products Data (With 6 Complete Items)
 const fallbackProducts = [
     { 
         _id: "650000000000000000000001",
@@ -28,15 +28,35 @@ const fallbackProducts = [
     { 
         _id: "650000000000000000000003",
         name: "Ultra HD 4K Action Camera", 
-        price: 129.00, 
-        image: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=500", 
-        description: "Compact 4K action camera with wide-angle lens." 
+        price: 299.99, 
+        image: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600", 
+        description: "Waterproof compact action camera with 4K recording and advanced stabilization." 
+    },
+    {
+        _id: "650000000000000000000004",
+        name: "Ergonomic Wireless Mouse",
+        price: 49.99,
+        image: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=600",
+        description: "Precision wireless mouse designed for all-day comfort and silent clicks."
+    },
+    {
+        _id: "650000000000000000000005",
+        name: "Minimalist Leather Backpack",
+        price: 129.50,
+        image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600",
+        description: "Durable and stylish leather backpack with dedicated laptop compartment."
+    },
+    {
+        _id: "650000000000000000000006",
+        name: "Mechanical Gaming Keyboard",
+        price: 89.99,
+        image: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=600",
+        description: "RGB backlit mechanical keyboard with tactile switches for high performance."
     }
 ];
 
 // 1. Fetch Products From Backend
 async function fetchProductsFromBackend() {
-    const productList = document.getElementById('product-list');
     try {
         const response = await fetch('/api/products');
         if (!response.ok) throw new Error("API Network response was not ok");
@@ -71,10 +91,11 @@ function displayProducts() {
         card.style.cursor = "pointer";
 
         const imageSrc = (product.image && product.image.startsWith('http')) ? product.image : `image/${product.image}`;
+        const productName = product.name || product.title;
 
         card.innerHTML = `
-            <img src="${imageSrc}" alt="${product.name}" onerror="this.src='https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500'">
-            <h3>${product.name}</h3>
+            <img src="${imageSrc}" alt="${productName}" onerror="this.src='https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500'">
+            <h3>${productName}</h3>
             <p>${product.description || 'Exclusive item from Ecom by parizad inc.'}</p>
             <div class="price-tag">$ ${product.price}</div>
             <div class="card-buttons">
@@ -115,10 +136,11 @@ async function openFullPageDetail(productId) {
         if (!product) product = fallbackProducts[0];
 
         const imageSrc = (product.image && product.image.startsWith('http')) ? product.image : `image/${product.image}`;
+        const productName = product.name || product.title;
 
         // Fill Data
         if (document.getElementById('detail-img')) document.getElementById('detail-img').src = imageSrc;
-        if (document.getElementById('detail-title')) document.getElementById('detail-title').innerText = product.name;
+        if (document.getElementById('detail-title')) document.getElementById('detail-title').innerText = productName;
         if (document.getElementById('detail-price')) document.getElementById('detail-price').innerText = `$ ${product.price}`;
         if (document.getElementById('detail-desc')) document.getElementById('detail-desc').innerText = product.description || "No description available.";
 
@@ -165,7 +187,8 @@ function addToCart(productId) {
     if (selectedProduct) {
         cart.push(selectedProduct);
         updateCartCount();
-        alert(`✅ ${selectedProduct.name} has been added to your cart!`);
+        const productName = selectedProduct.name || selectedProduct.title;
+        alert(`✅ ${productName} has been added to your cart!`);
     }
 }
 
@@ -191,11 +214,12 @@ function renderCartItems() {
     } else {
         cart.forEach((item, index) => {
             total += item.price;
+            const itemName = item.name || item.title;
             const itemElement = document.createElement("div");
             itemElement.style.cssText = "display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px solid #eee; padding-bottom:5px;";
             itemElement.innerHTML = `
                 <div>
-                    <strong>${item.name}</strong> - $ ${item.price}
+                    <strong>${itemName}</strong> - $ ${item.price}
                 </div>
                 <button onclick="removeFromCart(${index})" style="background:red; color:white; border:none; border-radius:3px; padding:2px 8px; cursor:pointer;">X</button>
             `;
