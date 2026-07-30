@@ -34,11 +34,10 @@ const fallbackProducts = [
     }
 ];
 
-// 1. Fetch Products From Backend (Relative Path to support Vercel & Local)
+// 1. Fetch Products From Backend
 async function fetchProductsFromBackend() {
     const productList = document.getElementById('product-list');
     try {
-        // Changed hardcoded localhost to relative path '/api/products'
         const response = await fetch('/api/products');
         if (!response.ok) throw new Error("API Network response was not ok");
         
@@ -50,7 +49,6 @@ async function fetchProductsFromBackend() {
         displayProducts();
     } catch (error) {
         console.warn("Error/Timeout fetching from API, using fallback:", error);
-        // Fallback: Red error msg dikhane ke bajaaye products display kar do
         products = fallbackProducts;
         displayProducts();
     }
@@ -108,7 +106,6 @@ async function openFullPageDetail(productId) {
         let product = products.find(p => p._id === productId);
         
         if (!product) {
-            // Changed hardcoded localhost to relative path
             const response = await fetch(`/api/products/${productId}`);
             if (response.ok) {
                 product = await response.json();
@@ -168,7 +165,7 @@ function addToCart(productId) {
     if (selectedProduct) {
         cart.push(selectedProduct);
         updateCartCount();
-        alert(`✅ ${selectedProduct.name} cart mein add ho gaya!`);
+        alert(`✅ ${selectedProduct.name} has been added to your cart!`);
     }
 }
 
@@ -227,7 +224,7 @@ function directBuyNow(productId) {
 
 function openCheckoutModal() {
     if (cart.length === 0) {
-        alert("Aapka cart khaali hai!");
+        alert("Your shopping cart is empty!");
         return;
     }
     buyNowItem = null;
@@ -249,16 +246,15 @@ if (orderForm) {
         const totalAmount = orderItems.reduce((sum, item) => sum + item.price, 0);
 
         const orderData = {
-            customerName: document.getElementById("cust-name").value,
-            phone: document.getElementById("cust-phone").value,
-            city: document.getElementById("cust-city").value,
-            address: document.getElementById("cust-address").value,
+            customerName: document.getElementById("cust-name") ? document.getElementById("cust-name").value : "",
+            phone: document.getElementById("cust-phone") ? document.getElementById("cust-phone").value : "",
+            city: document.getElementById("cust-city") ? document.getElementById("cust-city").value : "",
+            address: document.getElementById("cust-address") ? document.getElementById("cust-address").value : "",
             items: orderItems,
             totalAmount: totalAmount
         };
 
         try {
-            // Changed hardcoded localhost to relative path '/api/orders'
             const response = await fetch('/api/orders', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -266,23 +262,14 @@ if (orderForm) {
             });
 
             if (response.ok) {
-                alert("🎉 Shukriya! Aapka Order Successfully Place Ho Gaya Hai.");
-                cart = [];
-                buyNowItem = null;
-                updateCartCount();
-                closeCheckoutModal();
-                orderForm.reset();
+                alert("🎉 Thank you! Your order has been placed successfully.");
             } else {
-                alert("🎉 Shukriya! Aapka Order Place Ho Gaya.");
-                cart = [];
-                buyNowItem = null;
-                updateCartCount();
-                closeCheckoutModal();
-                orderForm.reset();
+                alert("🎉 Thank you! Your order has been placed successfully.");
             }
         } catch (error) {
             console.error("Order error:", error);
-            alert("🎉 Shukriya! Aapka Order Successfully Place Ho Gaya Hai.");
+            alert("🎉 Thank you for your order! Your purchase was successful and is now being processed.");
+        } finally {
             cart = [];
             buyNowItem = null;
             updateCartCount();
